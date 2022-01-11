@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+import { Container,Breadcrumb } from "react-bootstrap";
+
 
 function BlogDetail() {
   const [blogData, setBlogData] = useState("");
@@ -25,7 +27,12 @@ function BlogDetail() {
     console.log(blogData);
   }, []);
   return (
-    <>
+    <Container className="mt-3">
+      <Breadcrumb>
+      <Breadcrumb.Item as={Link} to="/">Home</Breadcrumb.Item>
+      <Breadcrumb.Item as={Link} to="/blog">Blog</Breadcrumb.Item>
+      <Breadcrumb.Item active>{blogData.title}</Breadcrumb.Item>
+    </Breadcrumb>
       {loader ? (
         <p className="center">Loading..........</p>
       ) : (
@@ -34,7 +41,7 @@ function BlogDetail() {
           <p>{blogData.body}</p>
         </div>
       )}
-    </>
+    </Container>
   );
 }
 
