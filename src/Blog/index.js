@@ -1,6 +1,7 @@
 import { Container, Row } from "react-bootstrap";
 import Blogpost from './BlogList';
 
+
 function Blog() {
   return (
     <section className="App-blog-page py-5">

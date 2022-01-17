@@ -1,10 +1,11 @@
 import { createBrowserHistory } from "history";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Router, Switch, Route } from "react-router-dom";
 import "./App.css";
 import Header from "./Header";
 import Banner from "./Banner";
 import Blog from "./Blog";
 import BlogDetail from "./Blog/BlogDetail";
+import Example from "./Hooks"
 
 const history = createBrowserHistory();
 
@@ -16,6 +17,7 @@ function App() {
         <Switch>
           <Route exact path="/">
             <Banner />
+            <Example />
           </Route>
           <Route path="/blog">
             <Banner text="Blog" />

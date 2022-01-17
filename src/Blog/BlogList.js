@@ -7,24 +7,22 @@ class Blogpost extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: "",
-      title: "",
-      body: "",
       data: "",
       searchVal:"",
     };
   }
 
-  componentDidMount() {
-    axios
+  async componentDidMount() {
+    try { await axios
       .get("https://jsonplaceholder.typicode.com/photos")
       .then((res) => {
-        let newData = res.data.slice(0, 20);
+        let newData = res.data.slice(0, 200);
         this.setState({
           data: newData,
         });
       })
-      .catch((err) => console.log("Couldn't fetch data. Error: " + err));
+    }
+    catch(error) {console.log(error)}
   }
   render() {
     const { data, searchVal } = this.state;
@@ -42,10 +40,9 @@ class Blogpost extends Component {
               <Button variant="outline-info">Search</Button>
             </Form>
           </Col>
-        {data.length === 0 ? ( <p>Loading Posts...</p> ) : (
-
-          data.filter(name => name.title.includes(searchVal)).map((post, index) => (
-            <Col sm={6} md={4} className="d-flex flex-column" key={index}>
+        {data && data.length ? (
+          data.filter(name => name.title.includes(searchVal)).map((post, i) => (
+            <Col sm={6} md={4} className="d-flex flex-column" key={i}>
               <article className="App-blog-card d-flex flex-column">
                 <div className="post-img-wrap position-relative">
                   <Link to={`/blog-detail/${post.id}`}>
@@ -66,7 +63,8 @@ class Blogpost extends Component {
               </article>
             </Col>
           ))
-        )}
+        ): ( <p>Loading Posts...</p> )
+      }
       </Row>
     );
   }
