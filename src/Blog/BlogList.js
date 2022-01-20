@@ -1,55 +1,55 @@
 import axios from "axios";
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import { Row, Col,Form,FormControl,Button } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Link,useHistory, useParams , useLocation  } from "react-router-dom";
+import { Row, Col, Form, FormControl, Button } from "react-bootstrap";
 
-class Blogpost extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: "",
-      searchVal:"",
-    };
-  }
-
-  async componentDidMount() {
-    try { await axios
-      .get("https://jsonplaceholder.typicode.com/photos")
-      .then((res) => {
-        let newData = res.data.slice(0, 200);
-        this.setState({
-          data: newData,
-        });
-      })
+function Blogpost() {
+  const [post, setPost] = useState();
+  const [searchVal, setSearchVal] = useState();
+  
+  async function getPost() {
+    try {
+      const res = await axios.get(
+        "https://jsonplaceholder.typicode.com/photos"
+      );
+      let newData = res.data.slice(0, 20);
+      setPost(newData);
+    } catch (error) {
+      console.error(error);
     }
-    catch(error) {console.log(error)}
   }
-  render() {
-    const { data, searchVal } = this.state;
-    return (
-      <Row className="gy-4">
-        <Col xs={12} className="mb-2">
-          <Form className="d-flex">
-              <FormControl
-                type="search"
-                placeholder="Search"
-                className="me-2"
-                aria-label="Search"
-                onChange={(v)=> this.setState({ searchVal: v.target.value })}
-              />
-              <Button variant="outline-info">Search</Button>
-            </Form>
-          </Col>
-        {data && data.length ? (
-          data.filter(name => name.title.includes(searchVal)).map((post, i) => (
+  useEffect(() => {
+    getPost();
+  }, []);
+  
+  const handleChange = (e) => {
+    setSearchVal(e.target.value);
+  }
+  const handleOnClick = (e) => {
+    const filtered = post.filter((name) => name.title.includes(searchVal));
+    setPost(filtered);
+  }
+  return (
+    <Row className="gy-4">
+      <Col xs={12} className="mb-2">
+        <Form className="d-flex">
+          <FormControl
+            type="search"
+            placeholder="Search"
+            className="me-2"
+            aria-label="Search"
+            onChange={(e)=>handleChange(e)}
+            />
+          <Button variant="outline-info" onClick={(e)=>handleOnClick(e)}>Search</Button>
+        </Form>
+      </Col>
+      {post && post.length ? (
+        post.map((post, i) => (
             <Col sm={6} md={4} className="d-flex flex-column" key={i}>
               <article className="App-blog-card d-flex flex-column">
                 <div className="post-img-wrap position-relative">
                   <Link to={`/blog-detail/${post.id}`}>
-                    <img
-                      src={post.url}
-                      className="post-image"
-                    />
+                    <img src={post.url} className="post-image" />
                   </Link>
                 </div>
                 <div className="article-details d-flex flex-column">
@@ -63,11 +63,11 @@ class Blogpost extends Component {
               </article>
             </Col>
           ))
-        ): ( <p>Loading Posts...</p> )
-      }
-      </Row>
-    );
-  }
+      ) : (
+        <p>Loading Posts...</p>
+      )}
+    </Row>
+  );
 }
 
 export default Blogpost;
